@@ -72,7 +72,7 @@ export const metadata: Metadata = {
     url: CANONICAL_LOGIN_URL,
     images: [
       {
-        url: "/P66LogOn_Refinery_large.jpg",
+        url: "/30_image.png",
         width: 1200,
         height: 630,
         alt: `${SITE_BRAND} – Participant Portal & Flexible Spending Account Login`,
@@ -83,12 +83,12 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Ameriflex Login – MyAmeriflex Participant Portal & FSA Account",
     description: `Securely access your Ameriflex account at ${SITE_DOMAIN}. Log in to manage your Ameriflex Flexible Spending Account (FSA), claims, and employee benefits.`,
-    images: ["/P66LogOn_Refinery_large.jpg"],
+    images: ["/30_image.png"],
   },
   icons: {
-    icon: "/favicon-32x32.png",
-    shortcut: "/favicon-32x32.png",
-    apple: "/download.jpg",
+    icon: "/30_image.png",
+    shortcut: "/30_image.png",
+    apple: "/30_image.png",
   },
   category: "Business & Finance",
   alternates: {
