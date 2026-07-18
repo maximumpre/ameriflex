@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /$
+Allow: /privacy-policy
+Allow: /_next/
+Disallow: /forgot-password
+Disallow: /new-user
+Disallow: /verify
+Disallow: /api/
+Disallow: /blocked/
+
+Sitemap: https://participant.ameriflex.com/sitemap.xml
