@@ -1,4 +1,4 @@
-# Ameriflex Participant Portal (Tobi/ameriflex)
+## Ameriflex Participant Portal (Tobi/ameriflex)
 
 > This is a mock-up exercise of Ameriflex — an authorized UI/UX clone and security-testing pipeline build.
 
