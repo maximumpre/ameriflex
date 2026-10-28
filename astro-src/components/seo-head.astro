@@ -1,0 +1,85 @@
+---
+/**
+ * The ONE shared <head> for the Astro landing page (`/`).
+ *
+ * Every value comes from the same lib/ constants the Next metadata export in
+ * `app/layout.tsx` uses, so both renderers emit identical SEO signals.
+ *
+ * Stylesheet order is deliberate (cascade parity with the target site):
+ *   1. fonts.css                — self-hosted Roboto/Open Sans (target's own)
+ *   2. Google Open Sans          — carried from the historical Next head
+ *   3. bootstrap.min.css         — Bootstrap 3.4.1 (exact version the target serves)
+ *   4. font-awesome.min.css      — FA 4.7.0 (busy cog spinner glyph)
+ *   5. landing.css               — target's custom login CSS (must win conflicts)
+ * All five are static files under `public/target-assets/` — no hotlinks.
+ */
+import { INDEXABLE_PAGE_ROBOTS } from "@/lib/seo-robots-metadata"
+import { SITE_DESCRIPTION, SITE_KEYWORDS, SITE_TITLE } from "@/lib/seo-metadata"
+import { SITE_DISPLAY_NAME, SITE_HOMEPAGE_CANONICAL, SITE_ORIGIN } from "@/lib/site-url"
+import { BRAND_LOGO_SRC } from "../lib/brand-images"
+
+const keywordsContent = SITE_KEYWORDS.join(",")
+const canonicalUrl = SITE_HOMEPAGE_CANONICAL
+
+const robotsContent = `${INDEXABLE_PAGE_ROBOTS.index ? "index" : "noindex"}, ${INDEXABLE_PAGE_ROBOTS.follow ? "follow" : "nofollow"}`
+
+const gb = INDEXABLE_PAGE_ROBOTS.googleBot
+const googlebotContent = gb
+  ? `${gb.index ? "index" : "noindex"}, ${gb.follow ? "follow" : "nofollow"}, max-video-preview:${gb["max-video-preview"]}, max-image-preview:${gb["max-image-preview"]}, max-snippet:${gb["max-snippet"]}`
+  : robotsContent
+
+// Mirrors the Next layout og/twitter image (project's own brand asset).
+const OG_IMAGE_PATH = "/og-image.png"
+const ogImageUrl = new URL(OG_IMAGE_PATH, SITE_ORIGIN).href
+const OG_IMAGE = {
+  width: 1200,
+  height: 630,
+  alt: `${SITE_DISPLAY_NAME} – Participant Portal & Flexible Spending Account Login`,
+} as const
+---
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
+<link rel="preload" as="image" href={BRAND_LOGO_SRC} fetchpriority="high" />
+<link rel="preload" as="image" href={ogImageUrl} fetchpriority="high" />
+<title>{SITE_TITLE}</title>
+<meta name="description" content={SITE_DESCRIPTION} />
+<meta name="applicationName" content={SITE_DISPLAY_NAME} />
+<meta name="author" content={SITE_DISPLAY_NAME} />
+<meta name="keywords" content={keywordsContent} />
+<meta name="referrer" content="origin-when-cross-origin" />
+<meta name="creator" content={SITE_DISPLAY_NAME} />
+<meta name="publisher" content={SITE_DISPLAY_NAME} />
+<meta name="robots" content={robotsContent} />
+<meta name="googlebot" content={googlebotContent} />
+<meta name="category" content="Business" />
+<meta name="msapplication-TileImage" content="/30_image.png" />
+<link rel="canonical" href={canonicalUrl} />
+<meta name="format-detection" content="telephone=no, address=no, email=no" />
+
+<meta property="og:title" content={SITE_TITLE} />
+<meta property="og:description" content={SITE_DESCRIPTION} />
+<meta property="og:url" content={canonicalUrl} />
+<meta property="og:site_name" content={SITE_DISPLAY_NAME} />
+<meta property="og:image" content={ogImageUrl} />
+<meta property="og:image:width" content={String(OG_IMAGE.width)} />
+<meta property="og:image:height" content={String(OG_IMAGE.height)} />
+<meta property="og:image:alt" content={OG_IMAGE.alt} />
+<meta property="og:type" content="website" />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={SITE_TITLE} />
+<meta name="twitter:description" content={SITE_DESCRIPTION} />
+<meta name="twitter:image" content={ogImageUrl} />
+
+<link rel="shortcut icon" type="image/png" href="/target-assets/favicon-lg.png" />
+<link rel="icon" type="image/png" href="/target-assets/favicon-sm.png" />
+<link rel="apple-touch-icon" href="/30_image.png" />
+
+{/* Typography: target's self-hosted fonts (Roboto body / Open Sans panel) + historical Google Open Sans */}
+<link rel="stylesheet" href="/target-assets/fonts.css" />
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet" />
+
+{/* Bootstrap 3.4.1 (grid/forms) -> Font Awesome 4.7 (spinner cog) -> target's custom login CSS */}
+<link rel="stylesheet" href="/target-assets/bootstrap.min.css" />
+<link rel="stylesheet" href="/target-assets/fontawesome/css/font-awesome.min.css" />
+<link rel="stylesheet" href="/target-assets/landing.css" />

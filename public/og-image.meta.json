@@ -1,0 +1,13 @@
+{
+  "mode": "composite",
+  "width": 1200,
+  "height": 630,
+  "source": "public/LoginLogo.png",
+  "sourceLabel": "public/LoginLogo.png",
+  "sourceKind": "cli",
+  "sourceIsSvg": false,
+  "logoBox": {
+    "width": 1080,
+    "height": 151
+  }
+}

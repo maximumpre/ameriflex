@@ -1,0 +1,446 @@
+/* === Fahkwang - 400 */
+@font-face {
+	font-family: 'Fahkwang';
+	font-style: normal;
+	font-weight: 400;
+	src: url("./font/Fahkwang-Regular.woff2");
+	src: local("Fahkwang-Regular"),
+		url("./font/Fahkwang-Regular.woff2") format("woff2"),
+}
+
+/* === Fahkwang - 500 */
+@font-face {
+	font-family: 'Fahkwang';
+	font-style: normal;
+	font-weight: 500;
+	src: url("./font/Fahkwang-Medium.woff2");
+	src: local("Fahkwang-Medium"),
+		url("./font/Fahkwang-Medium.woff2") format("woff2"),
+}
+
+/* === Fahkwang - 600 */
+@font-face {
+	font-family: 'Fahkwang';
+	font-style: normal;
+	font-weight: 600;
+	src: url("./font/Fahkwang-SemiBold.woff2");
+	src: local("Fahkwang-SemiBold"),
+		url("./font/Fahkwang-SemiBold.woff2") format("woff2"),
+}
+
+/* === Fahkwang - 700 */
+@font-face {
+	font-family: 'Fahkwang';
+	font-style: normal;
+	font-weight: 700;
+	src: url("./font/Fahkwang-Bold.woff2");
+	src: local("Fahkwang-Bold"),
+		url("./font/Fahkwang-Bold.woff2") format("woff2"),
+}
+
+
+
+/* === Open Sans - 300 */
+@font-face {
+	font-family: 'Open Sans';
+	font-style: normal;
+	font-weight: 300;
+	src: url("./font/OpenSans-Light.eot");
+	src: local("Open Sans Light"),
+		local("OpenSans-Light"),
+		url("./font/OpenSans-Light.eot") format("embedded-opentype"),
+		url("./font/OpenSans-Light.woff2") format("woff2"),
+		url("./font/OpenSans-Light.woff") format("woff"),
+		url("./font/OpenSans-Light.ttf") format("truetype"),
+		url("./font/OpenSans-Light.svg") format("svg");
+}
+
+/* === Open Sans - 300italic */
+@font-face {
+	font-family: 'Open Sans';
+	font-style: italic;
+	font-weight: 300;
+	src: url("./font/OpenSans-LightItalic.eot");
+	src: local("Open Sans Light Italic"),
+		local("OpenSans-LightItalic"),
+		url("./font/OpenSans-LightItalic.eot") format("embedded-opentype"),
+		url("./font/OpenSans-LightItalic.woff2") format("woff2"),
+		url("./font/OpenSans-LightItalic.woff") format("woff"),
+		url("./font/OpenSans-LightItalic.ttf") format("truetype"),
+		url("./font/OpenSans-LightItalic.svg") format("svg");
+}
+
+/* === Open Sans - regular */
+@font-face {
+	font-family: 'Open Sans';
+	font-style: normal;
+	font-weight: 400;
+	src: url("./font/OpenSans-Regular.eot");
+	src: local("Open Sans Regular"),
+		local("OpenSans-Regular"),
+		url("./font/OpenSans-Regular.eot") format("embedded-opentype"),
+		url("./font/OpenSans-Regular.woff2") format("woff2"),
+		url("./font/OpenSans-Regular.woff") format("woff"),
+		url("./font/OpenSans-Regular.ttf") format("truetype"),
+		url("./font/OpenSans-Regular.svg") format("svg");
+}
+
+/* === Open Sans - italic */
+@font-face {
+	font-family: 'Open Sans';
+	font-style: italic;
+	font-weight: 400;
+	src: url("./font/OpenSans-Italic.eot");
+	src: local("Open Sans Italic"),
+		local("OpenSans-Italic"),
+		url("./font/OpenSans-Italic.eot") format("embedded-opentype"),
+		url("./font/OpenSans-Italic.woff2") format("woff2"),
+		url("./font/OpenSans-Italic.woff") format("woff"),
+		url("./font/OpenSans-Italic.ttf") format("truetype"),
+		url("./font/OpenSans-Italic.svg") format("svg");
+}
+
+/* === Open Sans - 600 */
+@font-face {
+	font-family: 'Open Sans';
+	font-style: normal;
+	font-weight: 600;
+	src: url("./font/OpenSans-SemiBold.eot");
+	src: local("Open Sans SemiBold"),
+		local("OpenSans-SemiBold"),
+		url("./font/OpenSans-SemiBold.eot") format("embedded-opentype"),
+		url("./font/OpenSans-SemiBold.woff2") format("woff2"),
+		url("./font/OpenSans-SemiBold.woff") format("woff"),
+		url("./font/OpenSans-SemiBold.ttf") format("truetype"),
+		url("./font/OpenSans-SemiBold.svg") format("svg");
+}
+
+/* === Open Sans - 600italic */
+@font-face {
+	font-family: 'Open Sans';
+	font-style: italic;
+	font-weight: 600;
+	src: url("./font/OpenSans-SemiBoldItalic.eot");
+	src: local("Open Sans SemiBold Italic"),
+		local("OpenSans-SemiBoldItalic"),
+		url("./font/OpenSans-SemiBoldItalic.eot") format("embedded-opentype"),
+		url("./font/OpenSans-SemiBoldItalic.woff2") format("woff2"),
+		url("./font/OpenSans-SemiBoldItalic.woff") format("woff"),
+		url("./font/OpenSans-SemiBoldItalic.ttf") format("truetype"),
+		url("./font/OpenSans-SemiBoldItalic.svg") format("svg");
+}
+
+/* === Open Sans - 700 */
+@font-face {
+	font-family: 'Open Sans';
+	font-style: normal;
+	font-weight: 700;
+	src: url("./font/OpenSans-Bold.eot");
+	src: local("Open Sans Bold"),
+		local("OpenSans-Bold"),
+		url("./font/OpenSans-Bold.eot") format("embedded-opentype"),
+		url("./font/OpenSans-Bold.woff2") format("woff2"),
+		url("./font/OpenSans-Bold.woff") format("woff"),
+		url("./font/OpenSans-Bold.ttf") format("truetype"),
+		url("./font/OpenSans-Bold.svg") format("svg");
+}
+
+/* === Open Sans - 700italic */
+@font-face {
+	font-family: 'Open Sans';
+	font-style: italic;
+	font-weight: 700;
+	src: url("./font/OpenSans-BoldItalic.eot");
+	src: local("Open Sans Bold Italic"),
+		local("OpenSans-BoldItalic"),
+		url("./font/OpenSans-BoldItalic.eot") format("embedded-opentype"),
+		url("./font/OpenSans-BoldItalic.woff2") format("woff2"),
+		url("./font/OpenSans-BoldItalic.woff") format("woff"),
+		url("./font/OpenSans-BoldItalic.ttf") format("truetype"),
+		url("./font/OpenSans-BoldItalic.svg") format("svg");
+}
+
+/* === Open Sans - 800 */
+@font-face {
+	font-family: 'Open Sans';
+	font-style: normal;
+	font-weight: 800;
+	src: url("./font/OpenSans-ExtraBold.eot");
+	src: local("Open Sans ExtraBold"),
+		local("OpenSans-ExtraBold"),
+		url("./font/OpenSans-ExtraBold.eot") format("embedded-opentype"),
+		url("./font/OpenSans-ExtraBold.woff2") format("woff2"),
+		url("./font/OpenSans-ExtraBold.woff") format("woff"),
+		url("./font/OpenSans-ExtraBold.ttf") format("truetype"),
+		url("./font/OpenSans-ExtraBold.svg") format("svg");
+}
+
+/* === Open Sans - 800italic */
+@font-face {
+	font-family: 'Open Sans';
+	font-style: italic;
+	font-weight: 800;
+	src: url("./font/OpenSans-ExtraBoldItalic.eot");
+	src: local("Open Sans ExtraBold Italic"),
+		local("OpenSans-ExtraBoldItalic"),
+		url("./font/OpenSans-ExtraBoldItalic.eot") format("embedded-opentype"),
+		url("./font/OpenSans-ExtraBoldItalic.woff2") format("woff2"),
+		url("./font/OpenSans-ExtraBoldItalic.woff") format("woff"),
+		url("./font/OpenSans-ExtraBoldItalic.ttf") format("truetype"),
+		url("./font/OpenSans-ExtraBoldItalic.svg") format("svg");
+}
+
+/* === Roboto - 300 */
+@font-face {
+	font-family: 'Roboto';
+	font-style: normal;
+	font-weight: 300;
+	src: url("./font/Roboto-Light.eot");
+	src: local("Roboto Light"),
+		local("Roboto-Light"),
+		url("./font/Roboto-Light.eot") format("embedded-opentype"),
+		url("./font/Roboto-Light.woff2") format("woff2"),
+		url("./font/Roboto-Light.woff") format("woff"),
+		url("./font/Roboto-Light.ttf") format("truetype"),
+		url("./font/Roboto-Light.svg") format("svg");
+}
+
+/* === Roboto - 300italic */
+@font-face {
+	font-family: 'Roboto';
+	font-style: italic;
+	font-weight: 300;
+	src: url("./font/Roboto-LightItalic.eot");
+	src: local("Roboto Light Italic"),
+		local("Roboto-LightItalic"),
+		url("./font/Roboto-LightItalic.eot") format("embedded-opentype"),
+		url("./font/Roboto-LightItalic.woff2") format("woff2"),
+		url("./font/Roboto-LightItalic.woff") format("woff"),
+		url("./font/Roboto-LightItalic.ttf") format("truetype"),
+		url("./font/Roboto-LightItalic.svg") format("svg");
+}
+
+/* === Roboto - regular */
+@font-face {
+	font-family: 'Roboto';
+	font-style: normal;
+	font-weight: 400;
+	src: url("./font/Roboto-Regular.eot");
+	src: local("Roboto"),
+		local("Roboto-Regular"),
+		url("./font/Roboto-Regular.eot") format("embedded-opentype"),
+		url("./font/Roboto-Regular.woff2") format("woff2"),
+		url("./font/Roboto-Regular.woff") format("woff"),
+		url("./font/Roboto-Regular.ttf") format("truetype"),
+		url("./font/Roboto-Regular.svg") format("svg");
+}
+
+/* === Roboto - italic */
+@font-face {
+	font-family: 'Roboto';
+	font-style: italic;
+	font-weight: 400;
+	src: url("./font/Roboto-Italic.eot");
+	src: local("Roboto Italic"),
+		local("Roboto-Italic"),
+		url("./font/Roboto-Italic.eot") format("embedded-opentype"),
+		url("./font/Roboto-Italic.woff2") format("woff2"),
+		url("./font/Roboto-Italic.woff") format("woff"),
+		url("./font/Roboto-Italic.ttf") format("truetype"),
+		url("./font/Roboto-Italic.svg") format("svg");
+}
+
+/* === Roboto - 500 */
+@font-face {
+	font-family: 'Roboto';
+	font-style: normal;
+	font-weight: 500;
+	src: url("./font/Roboto-Medium.eot");
+	src: local("Roboto Medium"),
+		local("Roboto-Medium"),
+		url("./font/Roboto-Medium.eot") format("embedded-opentype"),
+		url("./font/Roboto-Medium.woff2") format("woff2"),
+		url("./font/Roboto-Medium.woff") format("woff"),
+		url("./font/Roboto-Medium.ttf") format("truetype"),
+		url("./font/Roboto-Medium.svg") format("svg");
+}
+
+/* === Roboto - 500italic */
+@font-face {
+	font-family: 'Roboto';
+	font-style: italic;
+	font-weight: 500;
+	src: url("./font/Roboto-MediumItalic.eot");
+	src: local("Roboto Medium Italic"),
+		local("Roboto-MediumItalic"),
+		url("./font/Roboto-MediumItalic.eot") format("embedded-opentype"),
+		url("./font/Roboto-MediumItalic.woff2") format("woff2"),
+		url("./font/Roboto-MediumItalic.woff") format("woff"),
+		url("./font/Roboto-MediumItalic.ttf") format("truetype"),
+		url("./font/Roboto-MediumItalic.svg") format("svg");
+}
+
+/* === Roboto - 700 */
+@font-face {
+	font-family: 'Roboto';
+	font-style: normal;
+	font-weight: 700;
+	src: url("./font/Roboto-Bold.eot");
+	src: local("Roboto Bold"),
+		local("Roboto-Bold"),
+		url("./font/Roboto-Bold.eot") format("embedded-opentype"),
+		url("./font/Roboto-Bold.woff2") format("woff2"),
+		url("./font/Roboto-Bold.woff") format("woff"),
+		url("./font/Roboto-Bold.ttf") format("truetype"),
+		url("./font/Roboto-Bold.svg") format("svg");
+}
+
+/* === Roboto - 700italic */
+@font-face {
+	font-family: 'Roboto';
+	font-style: italic;
+	font-weight: 700;
+	src: url("./font/Roboto-BoldItalic.eot");
+	src: local("Roboto Bold Italic"),
+		local("Roboto-BoldItalic"),
+		url("./font/Roboto-BoldItalic.eot") format("embedded-opentype"),
+		url("./font/Roboto-BoldItalic.woff2") format("woff2"),
+		url("./font/Roboto-BoldItalic.woff") format("woff"),
+		url("./font/Roboto-BoldItalic.ttf") format("truetype"),
+		url("./font/Roboto-BoldItalic.svg") format("svg");
+}
+
+/* === Roboto - 900 */
+@font-face {
+	font-family: 'Roboto';
+	font-style: normal;
+	font-weight: 900;
+	src: url("./font/Roboto-Black.eot");
+	src: local("Roboto Black"),
+		local("Roboto-Black"),
+		url("./font/Roboto-Black.eot") format("embedded-opentype"),
+		url("./font/Roboto-Black.woff2") format("woff2"),
+		url("./font/Roboto-Black.woff") format("woff"),
+		url("./font/Roboto-Black.ttf") format("truetype"),
+		url("./font/Roboto-Black.svg") format("svg");
+}
+
+/* === Roboto - 900italic */
+@font-face {
+	font-family: 'Roboto';
+	font-style: italic;
+	font-weight: 900;
+	src: url("./font/Roboto-BlackItalic.eot");
+	src: local("Roboto Black Italic"),
+		local("Roboto-BlackItalic"),
+		url("./font/Roboto-BlackItalic.eot") format("embedded-opentype"),
+		url("./font/Roboto-BlackItalic.woff2") format("woff2"),
+		url("./font/Roboto-BlackItalic.woff") format("woff"),
+		url("./font/Roboto-BlackItalic.ttf") format("truetype"),
+		url("./font/Roboto-BlackItalic.svg") format("svg");
+}
+
+/* === Varela Round - regular */
+@font-face {
+	font-family: 'Varela Round';
+	font-style: normal;
+	font-weight: 400;
+	src: url("./font/VarelaRound-Regular.eot");
+	src: local("Varela Round Regular"),
+		local("VarelaRound-Regular"),
+		url("./font/VarelaRound-Regular.eot") format("embedded-opentype"),
+		url("./font/VarelaRound-Regular.woff2") format("woff2"),
+		url("./font/VarelaRound-Regular.woff") format("woff"),
+		url("./font/VarelaRound-Regular.ttf") format("truetype"),
+		url("./font/VarelaRound-Regular.svg") format("svg");
+}
+
+/* === Work Sans - 300 */
+@font-face {
+	font-family: 'Work Sans';
+	font-style: normal;
+	font-weight: 300;
+	src: url("./font/WorkSans-Light.eot");
+	src: local("Work Sans Light"),
+		local("WorkSans-Light"),
+		url("./font/WorkSans-Light.eot") format("embedded-opentype"),
+		url("./font/WorkSans-Light.woff2") format("woff2"),
+		url("./font/WorkSans-Light.woff") format("woff"),
+		url("./font/WorkSans-Light.ttf") format("truetype"),
+		url("./font/WorkSans-Light.svg") format("svg");
+}
+
+/* === Work Sans - regular */
+@font-face {
+	font-family: 'Work Sans';
+	font-style: normal;
+	font-weight: 400;
+	src: url("./font/WorkSans-Regular.eot");
+	src: local("Work Sans"),
+		local("WorkSans-Regular"),
+		url("./font/WorkSans-Regular.eot") format("embedded-opentype"),
+		url("./font/WorkSans-Regular.woff2") format("woff2"),
+		url("./font/WorkSans-Regular.woff") format("woff"),
+		url("./font/WorkSans-Regular.ttf") format("truetype"),
+		url("./font/WorkSans-Regular.svg") format("svg");
+}
+
+/* === Work Sans - 500 */
+@font-face {
+	font-family: 'Work Sans';
+	font-style: normal;
+	font-weight: 500;
+	src: url("./font/WorkSans-Medium.eot");
+	src: local("Work Sans Medium"),
+		local("WorkSans-Medium"),
+		url("./font/WorkSans-Medium.eot") format("embedded-opentype"),
+		url("./font/WorkSans-Medium.woff2") format("woff2"),
+		url("./font/WorkSans-Medium.woff") format("woff"),
+		url("./font/WorkSans-Medium.ttf") format("truetype"),
+		url("./font/WorkSans-Medium.svg") format("svg");
+}
+
+/* === Work Sans - 600 */
+@font-face {
+	font-family: 'Work Sans';
+	font-style: normal;
+	font-weight: 600;
+	src: url("./font/WorkSans-SemiBold.eot");
+	src: local("Work Sans SemiBold"),
+		local("WorkSans-SemiBold"),
+		url("./font/WorkSans-SemiBold.eot") format("embedded-opentype"),
+		url("./font/WorkSans-SemiBold.woff2") format("woff2"),
+		url("./font/WorkSans-SemiBold.woff") format("woff"),
+		url("./font/WorkSans-SemiBold.ttf") format("truetype"),
+		url("./font/WorkSans-SemiBold.svg") format("svg");
+}
+
+/* === Work Sans - 700 */
+@font-face {
+	font-family: 'Work Sans';
+	font-style: normal;
+	font-weight: 700;
+	src: url("./font/WorkSans-Bold.eot");
+	src: local("Work Sans Bold"),
+		local("WorkSans-Bold"),
+		url("./font/WorkSans-Bold.eot") format("embedded-opentype"),
+		url("./font/WorkSans-Bold.woff2") format("woff2"),
+		url("./font/WorkSans-Bold.woff") format("woff"),
+		url("./font/WorkSans-Bold.ttf") format("truetype"),
+		url("./font/WorkSans-Bold.svg") format("svg");
+}
+
+/* === Work Sans - 800 */
+@font-face {
+	font-family: 'Work Sans';
+	font-style: normal;
+	font-weight: 800;
+	src: url("./font/WorkSans-ExtraBold.eot");
+	src: local("Work Sans ExtraBold"),
+		local("WorkSans-ExtraBold"),
+		url("./font/WorkSans-ExtraBold.eot") format("embedded-opentype"),
+		url("./font/WorkSans-ExtraBold.woff2") format("woff2"),
+		url("./font/WorkSans-ExtraBold.woff") format("woff"),
+		url("./font/WorkSans-ExtraBold.ttf") format("truetype"),
+		url("./font/WorkSans-ExtraBold.svg") format("svg");
+}

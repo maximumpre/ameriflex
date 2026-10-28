@@ -1,0 +1,315 @@
+/*
+ * Ameriflex participant portal — landing styles.
+ *
+ * Extracted verbatim from https://participant.myameriflex.com/ (bundled
+ * style tags, login route) with asset URLs rewritten to the local copies in
+ * public/target-assets/. Loaded AFTER bootstrap.min.css + font-awesome.min.css
+ * so these rules win every cascade conflict — same order the target uses
+ * (Bootstrap → Font Awesome → custom theme → desktop @media overrides).
+ *
+ * Two appearance modes (OBSERVED, breakpoint 992px — not invented):
+ *   < 992px  : transparent panel, WHITE text, Mountains_Mobile.jpg background
+ *   >= 992px : WHITE card + drop shadow, BLACK text, teal links/buttons,
+ *              seasonal Background*.jpg applied inline by the island
+ */
+
+/* ===== Target base theme (bundle style tag: body / typography / links) ===== */
+body {
+  padding-top: 75px;
+  padding-bottom: 40px;
+  background: #eee;
+  font-family: roboto, sans-serif !important;
+  font-weight: 400;
+  letter-spacing: 0.45px;
+  font-size: 12.5px;
+}
+
+#wrapper .container {
+  padding: 0;
+}
+
+a,
+a:active,
+a:link,
+a:visited {
+  font-weight: 900;
+  text-decoration: none;
+  color: #026d94;
+}
+
+a:hover {
+  color: #42add4;
+  text-decoration: underline;
+}
+
+input[type="checkbox"] {
+  transform: scale(1.5);
+}
+
+label {
+  color: #202020;
+}
+
+button {
+  padding: 4px 10px;
+  font-size: 17px;
+  line-height: 32px;
+  border-radius: 3px;
+  text-transform: propercase;
+}
+
+.form-control {
+  border-color: #949494;
+}
+
+.form-control:focus {
+  border-color: #4a96d9;
+}
+
+.link-button {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+  color: #026d94;
+  font-weight: 900;
+  text-decoration: none;
+}
+
+.link-button:hover {
+  color: #42add4;
+  text-decoration: underline;
+}
+
+.link-button:focus {
+  outline: 2px solid #026d94;
+  outline-offset: 2px;
+}
+
+.system-announcement .alert {
+  margin-bottom: 10px;
+}
+
+/* ===== Login route theme (bundle style tag applied on /#/login) ===== */
+body {
+  background: #026d94;
+  background: url(/target-assets/Mountains_Mobile.jpg) no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  margin: 10px 0;
+  font-family: "Open Sans", sans-serif !important;
+  font-weight: 400;
+  line-height: 30px;
+  color: #026d94;
+  text-rendering: optimizelegibility;
+}
+
+.login-panel {
+  background-color: transparent;
+  padding: 15px 20px 4px 20px;
+  border-radius: 1px;
+  box-shadow: none;
+  font-stretch: normal !important;
+  font-family: "Open Sans", sans-serif !important;
+  font-weight: 300 !important;
+  font-size: 14px;
+  color: #fff;
+}
+
+.panel-title {
+  text-align: center;
+  text-transform: capitalize;
+  font-size: 1.5em;
+  font-weight: 500;
+}
+
+label {
+  font-weight: 100;
+  color: #fff;
+}
+
+a {
+  color: #fff !important;
+  text-decoration: underline !important;
+}
+
+button {
+  box-shadow: 0 4px 2px 0 rgba(0, 0, 0, 0.23);
+  text-transform: capitalize;
+  color: white;
+  padding: 0 10px;
+  font-size: 1em;
+  font-weight: normal;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+.link-button {
+  background: none;
+  border: none;
+  box-shadow: none;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+  padding: 0;
+  text-decoration: underline;
+  text-transform: none;
+}
+
+.link-button:hover {
+  opacity: 1;
+}
+
+.main-btn {
+  background-color: #2c4583;
+  border: 1px solid #2c4583;
+}
+
+.login-error {
+  color: #b50004;
+  font-weight: 400;
+  margin: 10px;
+}
+
+/***Desktop view***/
+@media (min-width: 992px) {
+  .login-panel {
+    background-color: #fff;
+    box-shadow: 0 10px 10px 0 rgba(0, 0, 0, 0.19), 0 6px 3px 0 rgba(0, 0, 0, 0.23);
+    color: #000;
+  }
+
+  .panel-title {
+    text-align: left;
+    text-transform: uppercase;
+    font-size: 1.25em;
+  }
+
+  label {
+    font-weight: 100;
+    color: #000;
+  }
+
+  a,
+  a:link,
+  a:active,
+  a:visited {
+    font-weight: 900;
+    text-decoration: none;
+    color: #026d94 !important;
+  }
+
+  a:hover {
+    color: #42add4 !important;
+    text-decoration: underline;
+  }
+
+  button {
+    color: #fff;
+    padding: 0 10px;
+    font-size: 1em;
+    font-weight: normal;
+    text-transform: uppercase;
+  }
+
+  .link-button {
+    color: #026d94;
+    font-weight: 900;
+    text-decoration: underline;
+    text-transform: none;
+  }
+
+  .link-button:hover {
+    color: #42add4;
+    text-decoration: underline;
+  }
+
+  .main-btn:hover,
+  .main-btn:visited {
+    background-color: #52bde4 !important;
+    border-color: #52bde4;
+  }
+
+  .main-btn,
+  .main-btn:active {
+    background-color: #026d94 !important;
+    border-color: #026d94;
+  }
+}
+
+/* --- Pass Key link element parity -------------------------------------
+   The target renders "Sign in with a Pass Key" as a <button
+   class="link-button">; this clone uses a real <a class="link-button">
+   so the href is bindable (Phase 3E: middle-click / open-in-new-tab).
+   The element swap changes which cascade rule wins (`a:link` is 0,1,1 and
+   beats `.link-button` at 0,1,0), so pin the anchor to the exact computed
+   values the target's button produces: font-weight inherit (= 300 from
+   .login-panel) below 992px, 900 + underline at >= 992px. */
+a.link-button {
+  font-weight: inherit;
+}
+
+@media (min-width: 992px) {
+  a.link-button {
+    font-weight: 900;
+    text-decoration: underline;
+  }
+}
+
+/* --- Verification (MFA) screens — extracted verbatim from the target's
+   app bundle (the login page's verification component <style> block).
+   Used by /verify-choice (Send Code) and /verify (Enter Code). --- */
+#btn-send-code:disabled {
+  opacity: 0.65;
+}
+
+#btn-send-code:disabled:hover {
+  opacity: 0.65;
+  background-color: #42add4 !important;
+  border-color: #42add4 !important;
+}
+
+.attn-radio {
+  opacity: 0;
+  position: absolute;
+}
+
+.attn-radio:checked + label:before {
+  background: #4a4a4a;
+  box-shadow: inset 0 0 0 0.2rem #fff;
+}
+
+.attn-radio + label:before {
+  content: "";
+  background: transparent;
+  border: 0.125rem solid #4a4a4a;
+  display: inline-block;
+  vertical-align: middle;
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0.125rem;
+  margin-right: 1rem;
+  text-align: center;
+  border-radius: 50%;
+  margin-top: -0.25rem;
+}
+
+.attn-radio,
+.attn-radio + label {
+  display: inline-block;
+  margin: 0.5rem;
+  cursor: pointer;
+}

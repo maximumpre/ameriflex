@@ -1,20 +1,14 @@
-import { MetadataRoute } from 'next'
+import { MetadataRoute } from "next"
+import { SITE_CONTENT_UPDATED_AT, SITE_HOMEPAGE_CANONICAL } from "@/lib/site-url"
 
+/** Only the homepage is intended for search indexing; do not list gated app routes. */
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = (process.env.NEXT_PUBLIC_BASE_URL || 'https://participant.ameriflex.com').replace(/#\/login$/, '')
-
   return [
     {
-      url: baseUrl,
-      lastModified: new Date(),
-      changeFrequency: 'daily',
-      priority: 1.0,
-    },
-    {
-      url: `${baseUrl}/privacy-policy`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.9,
+      url: SITE_HOMEPAGE_CANONICAL,
+      lastModified: SITE_CONTENT_UPDATED_AT,
+      changeFrequency: "weekly",
+      priority: 1,
     },
   ]
 }

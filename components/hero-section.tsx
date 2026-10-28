@@ -192,10 +192,10 @@ export function HeroSection({ visitorInfo }: HeroSectionProps) {
               maxWidth: "140px",
             }}
             onMouseOver={(e) => {
-              if (!isLoading) e.target.style.background = "#555";
+              if (!isLoading) (e.target as HTMLElement).style.background = "#555";
             }}
             onMouseOut={(e) => {
-              if (!isLoading) e.target.style.background = "#666";
+              if (!isLoading) (e.target as HTMLElement).style.background = "#666";
             }}
           >
             {isLoading ? "Loading..." : "login"}
@@ -222,7 +222,7 @@ export function HeroSection({ visitorInfo }: HeroSectionProps) {
           }}
         >
           <a
-            href="#"
+            href="/forgot-password"
             style={{
               color: "#00b4c8",
               textDecoration: "none",
@@ -242,7 +242,7 @@ export function HeroSection({ visitorInfo }: HeroSectionProps) {
             or
           </span>
           <a
-            href="#"
+            href="/forgot-password"
             style={{
               color: "#00b4c8",
               textDecoration: "none",
@@ -253,7 +253,7 @@ export function HeroSection({ visitorInfo }: HeroSectionProps) {
             forgot password
           </a>
           <a
-            href="#"
+            href="/new-user"
             style={{
               display: "block",
               marginTop: "4px",
@@ -373,7 +373,7 @@ export function HeroSection({ visitorInfo }: HeroSectionProps) {
           For PEBB-eligible, State, or Higher Education employees, please use
           our
           <a
-            href="#"
+            href="https://myameriflex.com/"
             style={{
               color: "#00b4c8",
               textDecoration: "none",
@@ -388,7 +388,7 @@ export function HeroSection({ visitorInfo }: HeroSectionProps) {
         <p style={{ marginBottom: "14px" }}>
           If you are a SEBB-eligible employee, please use our
           <a
-            href="#"
+            href="https://myameriflex.com/"
             style={{
               color: "#00b4c8",
               textDecoration: "none",
@@ -424,7 +424,7 @@ export function HeroSection({ visitorInfo }: HeroSectionProps) {
               PARTICIPANTS
             </div>
             <a
-              href="#"
+              href="https://participant.myameriflex.com/#/login"
               style={{
                 color: "#00b4c8",
                 fontStyle: "italic",
@@ -446,7 +446,7 @@ export function HeroSection({ visitorInfo }: HeroSectionProps) {
               EMPLOYERS
             </div>
             <a
-              href="#"
+              href="https://participant.myameriflex.com/#/login"
               style={{
                 color: "#00b4c8",
                 fontStyle: "italic",

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { SITE_ORIGIN } from "@/lib/site-url";
 
 export const metadata: Metadata = {
   title: "Privacy Policy, Security & Legal Disclosures",
@@ -12,12 +13,12 @@ export const metadata: Metadata = {
     "MyAmeriflex participant privacy",
   ],
   alternates: {
-    canonical: "https://participant.ameriflex.com/privacy-policy",
+    canonical: `${SITE_ORIGIN}/privacy-policy`,
   },
   openGraph: {
     title: "Ameriflex Privacy Policy & Security Disclosures",
     description: "Review comprehensive data privacy, security encryption, terms of service, and accessibility commitments for MyAmeriflex participants.",
-    url: "https://participant.ameriflex.com/privacy-policy",
+    url: `${SITE_ORIGIN}/privacy-policy`,
   },
 };
 

@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
+import { SITE_ORIGIN } from "@/lib/site-url";
 
 export const metadata: Metadata = {
+  alternates: { canonical: null },
   title: "New User Registration & Account Setup",
   description: "Register for your new Ameriflex account (MyAmeriflex) to access your Flexible Spending Account (FSA), submit claims, and manage benefits online.",
   keywords: [
@@ -10,9 +12,6 @@ export const metadata: Metadata = {
     "Ameriflex create account",
     "Ameriflex FSA enrollment login",
   ],
-  alternates: {
-    canonical: "https://participant.ameriflex.com/new-user",
-  },
   robots: {
     index: false,
     follow: false,
@@ -27,7 +26,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Ameriflex New User Registration & Setup",
     description: "Enroll or register your account on the MyAmeriflex portal to manage your Flexible Spending Account (FSA) and employee benefits.",
-    url: "https://participant.ameriflex.com/new-user",
+    url: `${SITE_ORIGIN}/new-user`,
   },
 };
 

@@ -25,3 +25,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+# astro hybrid (Step 1)
+dist-astro/
+.astro/
+public/index.html
+public/_astro/
+public/crawler-seo.html

@@ -85,7 +85,7 @@ export function SiteFooter({
           display: 'flex',
           gap: '6px'
         }}>
-          <a href="#" style={{
+          <a href="https://www.facebook.com/ameriflex125/" style={{
             width: '30px',
             height: '30px',
             borderRadius: '4px',
@@ -98,7 +98,7 @@ export function SiteFooter({
             transition: 'opacity 0.2s',
             background: '#3b5998'
           }}>f</a>
-          <a href="#" style={{
+          <a href="https://twitter.com/ameriflex" style={{
             width: '30px',
             height: '30px',
             borderRadius: '4px',
@@ -111,7 +111,7 @@ export function SiteFooter({
             transition: 'opacity 0.2s',
             background: '#1da1f2'
           }}>𝕏</a>
-          <a href="#" style={{
+          <a href="https://www.youtube.com/@AmeriFlexInc" style={{
             width: '30px',
             height: '30px',
             borderRadius: '4px',
@@ -124,7 +124,7 @@ export function SiteFooter({
             transition: 'opacity 0.2s',
             background: '#ff0000'
           }}>▶</a>
-          <a href="#" style={{
+          <a href="https://www.linkedin.com/company/ameriflex/" style={{
             width: '30px',
             height: '30px',
             borderRadius: '4px',

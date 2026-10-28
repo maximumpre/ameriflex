@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
+import { SITE_ORIGIN } from "@/lib/site-url";
 
 export const metadata: Metadata = {
+  alternates: { canonical: null },
   title: "Verify Identity – Account Security",
   description: "Complete multi-factor authentication and verify your identity to securely sign in to your Ameriflex account (MyAmeriflex portal).",
   keywords: [
@@ -9,9 +11,6 @@ export const metadata: Metadata = {
     "Ameriflex MFA login",
     "myameriflex identity verification",
   ],
-  alternates: {
-    canonical: "https://participant.ameriflex.com/verify",
-  },
   robots: {
     index: false,
     follow: false,
@@ -26,7 +25,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Ameriflex Verify Identity & Secure Login",
     description: "Multi-factor verification for your MyAmeriflex participant login session.",
-    url: "https://participant.ameriflex.com/verify",
+    url: `${SITE_ORIGIN}/verify`,
   },
 };
 

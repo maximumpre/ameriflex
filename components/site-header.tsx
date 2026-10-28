@@ -162,7 +162,7 @@ export function SiteHeader() {
         {isLandingPage && (
           <>
             <a
-              href="#"
+              href="/"
               style={{
                 background: "#c0392b",
                 color: "#fff",
@@ -182,7 +182,7 @@ export function SiteHeader() {
               log in →
             </a>
             <a
-              href="#"
+              href="/new-user"
               style={{
                 background: "#c0392b",
                 color: "#fff",

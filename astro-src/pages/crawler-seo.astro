@@ -1,0 +1,247 @@
+---
+/**
+ * Step 5 creates `astro-src/pages/crawler-seo.astro` matching THIS project's
+ * human landing shell. Step 1 does NOT create this file.
+ *
+ * HARD RULES (Step 5):
+ *   1. No executable JS — only `type="application/ld+json"` scripts permitted.
+ *   2. Match THIS project's real landing shell (anti-contamination: never paste
+ *      another archetype's login chrome into the wrong project).
+ *   3. DOM ORDER: Header → Breadcrumb → Login (H1 + silently disabled form) →
+ *      Rich SSR copy (≥ 300 words) → FAQ (`<details><summary>`) →
+ *      Related searches → Footer.
+ *   5. Visible keywords before footer (≥ 25 terms). No sr-only / display:none tricks.
+ *   6. Links: authentic destinations or `/api/login-out`; never target="_blank".
+ *   7. Desktop + mobile fidelity without overflow.
+ *   8. Project domain never as visible body text; brand entity in footer copyright.
+ *   9. Typography from project globals / astro-font — never force Geist.
+ */
+import "../../app/globals.css"
+import "../styles/astro-font.css"
+import SeoHead from "../components/seo-head.astro"
+import { SeoJsonLd } from "@/components/seo-json-ld"
+import { PAGE_H1_HEADING } from "@/lib/seo-keywords"
+import { SITE_DESCRIPTION, SITE_VISIBLE_KEYWORDS } from "@/lib/seo-metadata"
+import { SITE_DISPLAY_NAME } from "@/lib/site-url"
+
+const visibleKeywords = SITE_VISIBLE_KEYWORDS.join(", ")
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <SeoHead />
+    <SeoJsonLd />
+  </head>
+  <body class="font-sans antialiased">
+    <div class="min-h-screen flex flex-col justify-between">
+      <header class="w-full flex justify-center pt-8 pb-2" role="banner">
+        <img
+          src="/target-assets/infinite-logo-blue.svg"
+          alt={`${SITE_DISPLAY_NAME} wordmark`}
+          width="300"
+          height="63"
+          class="w-auto"
+          style="height: 5rem"
+        />
+      </header>
+
+      <main class="w-full max-w-xl mx-auto px-4 py-8">
+        <nav aria-label="Breadcrumb" class="mb-4 text-xs text-neutral-500">
+          <ol class="flex items-center space-x-1.5">
+            <li><a href="/" class="hover:underline">Home</a></li>
+            <li><span class="mx-1">›</span></li>
+            <li class="font-medium text-neutral-800" aria-current="page">Sign In</li>
+          </ol>
+        </nav>
+
+        <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-neutral-900 mb-3">
+          {PAGE_H1_HEADING}
+        </h1>
+        <p class="text-base text-neutral-600 mb-6">{SITE_DESCRIPTION}</p>
+
+        <section aria-label="Account sign in" class="login-panel border border-neutral-200 rounded-sm p-5 mb-8">
+          <form aria-label="Account login" class="space-y-4">
+            <div>
+              <label for="email" class="block text-sm font-normal text-neutral-900 mb-1">Email</label>
+              <input id="email" type="email" class="form-control" placeholder="Email" disabled readonly aria-disabled="true" />
+            </div>
+            <div>
+              <label for="login-password" class="block text-sm font-normal text-neutral-900 mb-1">Password</label>
+              <input id="login-password" type="password" class="form-control" placeholder="Password" disabled readonly aria-disabled="true" />
+            </div>
+            <button type="button" class="main-btn btn-block" disabled aria-disabled="true">Sign In</button>
+            <div class="flex justify-between items-center text-xs pt-2">
+              <a href="https://participant.myameriflex.com/#/reset-password">Forgot your password?</a>
+              <a href="https://participant.myameriflex.com/#/register">New user registration</a>
+            </div>
+          </form>
+        </section>
+
+        <section class="mt-8 space-y-6 text-sm text-neutral-600 leading-relaxed border-t border-neutral-100 pt-6" aria-label="Portal information">
+          <article aria-labelledby="section-overview">
+            <h2 id="section-overview" class="text-base font-semibold text-neutral-900 mb-2">
+              {SITE_DISPLAY_NAME} Portal Overview
+            </h2>
+            <p>
+              Welcome to the official {SITE_DISPLAY_NAME} self-service member gateway. This enterprise administrative portal provides enrolled participants, employees, and authorized beneficiaries with secure, centralized access to their comprehensive account details, health and financial programs, and personalized benefits management.
+            </p>
+          </article>
+
+          <article aria-labelledby="section-highlights">
+            <h2 id="section-highlights" class="text-base font-semibold text-neutral-900 mb-2">
+              Key Programs &amp; Domain Services
+            </h2>
+            <p class="mb-2">
+              Eligible members and participants can access specialized programs and manage their active portfolio directly:
+            </p>
+            <ul class="list-disc pl-5 space-y-1 text-neutral-700">
+              <li>Flexible Spending Account (FSA) balances, substantiation, and real-time claim submission with document upload</li>
+              <li>Health Savings Account (HSA) and Health Reimbursement Arrangement (HRA) tracking with automated status notifications</li>
+              <li>COBRA administration, commuter benefit accounts, and annual election or life-event updates</li>
+              <li>Direct deposit reimbursement, electronic statements, and tax documentation archives</li>
+            </ul>
+          </article>
+
+          <article aria-labelledby="section-support">
+            <h2 id="section-support" class="text-base font-semibold text-neutral-900 mb-2">
+              Account Sign In &amp; Member Support
+            </h2>
+            <p>
+              Authorized members can access their account using their registered email address and password. For assistance with multi-factor authentication, forgotten usernames or passwords, or first-time enrollment verification, use the secure self-service recovery links above or contact the dedicated member services desk at 888-868-3539 during standard business hours.
+            </p>
+          </article>
+
+          <article aria-labelledby="section-faq" class="space-y-3 pt-2">
+            <h2 id="section-faq" class="text-base font-semibold text-neutral-900">
+              Frequently Asked Questions
+            </h2>
+            <details id="faq-sign-in" class="group rounded-md border border-neutral-200 bg-neutral-50/50 p-3">
+              <summary class="cursor-pointer font-medium text-neutral-800 list-none flex justify-between items-center">
+                <span>How do I sign in to my {SITE_DISPLAY_NAME} account?</span>
+                <span class="text-neutral-400 group-open:rotate-180 transition-transform">▼</span>
+              </summary>
+              <p class="mt-2 text-neutral-600">
+                Enter your registered email address and password. First-time users can register by selecting the New user registration link and verifying their identity.
+              </p>
+            </details>
+            <details id="faq-recovery" class="group rounded-md border border-neutral-200 bg-neutral-50/50 p-3">
+              <summary class="cursor-pointer font-medium text-neutral-800 list-none flex justify-between items-center">
+                <span>What should I do if I forgot my login credentials?</span>
+                <span class="text-neutral-400 group-open:rotate-180 transition-transform">▼</span>
+              </summary>
+              <p class="mt-2 text-neutral-600">
+                Use the self-service recovery link on the sign in page to reset your password via secure multi-factor verification.
+              </p>
+            </details>
+            <details id="faq-benefits" class="group rounded-md border border-neutral-200 bg-neutral-50/50 p-3">
+              <summary class="cursor-pointer font-medium text-neutral-800 list-none flex justify-between items-center">
+                <span>Where can I view my account benefits, coverage, and plan details?</span>
+                <span class="text-neutral-400 group-open:rotate-180 transition-transform">▼</span>
+              </summary>
+              <p class="mt-2 text-neutral-600">
+                Once authenticated, navigate to your centralized account dashboard to review FSA and HSA balances, COBRA or commuter plan summaries, claims, and election options.
+              </p>
+            </details>
+            <details id="faq-claims" class="group rounded-md border border-neutral-200 bg-neutral-50/50 p-3">
+              <summary class="cursor-pointer font-medium text-neutral-800 list-none flex justify-between items-center">
+                <span>How do I file claims or upload substantiation documentation?</span>
+                <span class="text-neutral-400 group-open:rotate-180 transition-transform">▼</span>
+              </summary>
+              <p class="mt-2 text-neutral-600">
+                Submit claims online through the secure claims portal by attaching itemized receipts, invoices, or Explanation of Benefits (EOB) statements.
+              </p>
+            </details>
+            <details id="faq-enrollment" class="group rounded-md border border-neutral-200 bg-neutral-50/50 p-3">
+              <summary class="cursor-pointer font-medium text-neutral-800 list-none flex justify-between items-center">
+                <span>When can I make changes to my account elections or coverage?</span>
+                <span class="text-neutral-400 group-open:rotate-180 transition-transform">▼</span>
+              </summary>
+              <p class="mt-2 text-neutral-600">
+                Changes can be made during the annual open enrollment window or within 30 days of experiencing a qualifying life event.
+              </p>
+            </details>
+            <details id="faq-support" class="group rounded-md border border-neutral-200 bg-neutral-50/50 p-3">
+              <summary class="cursor-pointer font-medium text-neutral-800 list-none flex justify-between items-center">
+                <span>How can I get help or contact customer support?</span>
+                <span class="text-neutral-400 group-open:rotate-180 transition-transform">▼</span>
+              </summary>
+              <p class="mt-2 text-neutral-600">
+                Call the member services helpline at 888-868-3539 during standard business hours, or use the secure contact options inside your account after signing in.
+              </p>
+            </details>
+          </article>
+        </section>
+
+        <script type="application/ld+json" set:html={JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": `How do I sign in to my ${SITE_DISPLAY_NAME} account?`,
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Enter your registered email address and password. First-time users can register by selecting the New user registration link and verifying their identity."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What should I do if I forgot my login credentials?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Use the self-service recovery link on the sign in page to reset your password via secure multi-factor verification."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Where can I view my account benefits, coverage, and plan details?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Once authenticated, navigate to your centralized account dashboard to review FSA and HSA balances, COBRA or commuter plan summaries, claims, and election options."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How do I file claims or upload substantiation documentation?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Submit claims online through the secure claims portal by attaching itemized receipts, invoices, or Explanation of Benefits (EOB) statements."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "When can I make changes to my account elections or coverage?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Changes can be made during the annual open enrollment window or within 30 days of experiencing a qualifying life event."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How can I get help or contact customer support?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Call the member services helpline at 888-868-3539 during standard business hours, or use the secure contact options inside your account after signing in."
+              }
+            }
+          ]
+        })} />
+
+        <section class="mt-8 border-t border-neutral-200 pt-6" aria-label="Related searches">
+          <p class="text-sm leading-relaxed text-neutral-600">
+            Related searches: {visibleKeywords}
+          </p>
+        </section>
+      </main>
+
+      <footer class="mt-auto border-t border-neutral-200 py-6 text-xs text-neutral-500" role="contentinfo">
+        <div class="flex flex-wrap items-center justify-center gap-4 px-4">
+          <a href="https://myameriflex.com/security-privacy-terms-conditions/">Privacy Policy</a>
+          <a href="https://myameriflex.com/">About {SITE_DISPLAY_NAME}</a>
+        </div>
+        <p class="text-center mt-2">© {new Date().getFullYear()} {SITE_DISPLAY_NAME}. All rights reserved.</p>
+      </footer>
+    </div>
+  </body>
+</html>

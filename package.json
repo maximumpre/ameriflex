@@ -3,14 +3,21 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "build": "next build",
-    "dev": "next dev",
+    "dev": "node scripts/dev.mjs",
+    "dev:next": "next dev",
+    "build": "npm run prebuild && next build",
+    "postbuild": "node scripts/notify-indexnow.mjs",
+    "prebuild": "npm run build:astro && node scripts/audit-steins-gate.mjs . && node scripts/audit-error-screen.mjs . && SITE_ORIGIN_ALLOW_APEX=1 node scripts/audit-crawler-seo.mjs . && node scripts/audit-neon-database.mjs .",
+    "build:astro": "astro build && node scripts/sync-astro-pages.mjs",
+    "astro:watch": "node scripts/astro-watch.mjs",
+    "predev": "npm run build:astro",
     "lint": "eslint .",
     "start": "next start"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
     "@marsidev/react-turnstile": "^1.4.2",
+    "@neondatabase/serverless": "^1.2.0",
     "@radix-ui/react-accordion": "1.2.2",
     "@radix-ui/react-alert-dialog": "1.1.4",
     "@radix-ui/react-aspect-ratio": "1.1.1",
@@ -64,10 +71,13 @@
     "zod": "3.25.76"
   },
   "devDependencies": {
+    "@astrojs/react": "^7.1.1",
     "@tailwindcss/postcss": "^4.1.9",
+    "@tailwindcss/vite": "^4.3.3",
     "@types/node": "^22",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "astro": "^7.4.2",
     "postcss": "^8.5",
     "tailwindcss": "^4.1.9",
     "tw-animate-css": "1.3.3",

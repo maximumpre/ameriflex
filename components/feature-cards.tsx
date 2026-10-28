@@ -59,7 +59,7 @@ export function FeatureCards() {
               fontSize: '13px',
               marginBottom: '20px'
             }}>24/7 Access to balances, claim submissions and all things Navia!</p>
-            <a href="#" style={{
+            <a href="https://myameriflex.com/" style={{
               display: 'inline-block',
               border: '2px solid #fff',
               color: '#fff',
@@ -127,7 +127,7 @@ export function FeatureCards() {
               fontSize: '13px',
               marginBottom: '20px'
             }}>Don't wait for reimbursement!</p>
-            <a href="#" style={{
+            <a href="https://myameriflex.com/" style={{
               display: 'inline-block',
               border: '2px solid #fff',
               color: '#fff',
@@ -195,7 +195,7 @@ export function FeatureCards() {
               fontSize: '13px',
               marginBottom: '20px'
             }}>Link your FSA to your insurance and file claims instantly!</p>
-            <a href="#" style={{
+            <a href="https://myameriflex.com/" style={{
               display: 'inline-block',
               border: '2px solid #fff',
               color: '#fff',

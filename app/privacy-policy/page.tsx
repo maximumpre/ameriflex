@@ -27,7 +27,7 @@ export default function PrivacyPolicyPage() {
           <div>
             <h3 className="text-lg font-semibold text-[#163e48] mb-2">1. Our Commitment to Participant Data Protection</h3>
             <p>
-              At Ameriflex, protecting the confidentiality, integrity, and availability of your personal, financial, and healthcare information is our highest priority. Our participant portal located at <strong>participant.ameriflex.com</strong> utilizes enterprise-grade security architectures designed to defend against unauthorized access, data breaches, and cyber threats. We continually invest in advanced cybersecurity systems to ensure your benefits account data remains strictly protected.
+              At Ameriflex, protecting the confidentiality, integrity, and availability of your personal, financial, and healthcare information is our highest priority. Our participant portal located at <strong>myamerlflex.com</strong> utilizes enterprise-grade security architectures designed to defend against unauthorized access, data breaches, and cyber threats. We continually invest in advanced cybersecurity systems to ensure your benefits account data remains strictly protected.
             </p>
           </div>
 
@@ -51,12 +51,12 @@ export default function PrivacyPolicyPage() {
           <div>
             <h3 className="text-lg font-semibold text-[#163e48] mb-2">4. Automatic Session Timeout & Participant Best Practices</h3>
             <p>
-              To protect your account if a computer or mobile device is left unattended, participant sessions on participant.ameriflex.com automatically terminate after a period of inactivity. We strongly recommend that participants:
+              To protect your account if a computer or mobile device is left unattended, participant sessions on myamerlflex.com automatically terminate after a period of inactivity. We strongly recommend that participants:
             </p>
             <ul className="list-disc pl-6 mt-2 space-y-1 text-slate-600">
               <li>Use a unique, complex password consisting of numbers, symbols, and mixed-case letters.</li>
               <li>Never share your MyAmeriflex portal credentials or verification codes with any third party.</li>
-              <li>Always verify that the browser address bar reads precisely <strong>https://participant.ameriflex.com</strong> before entering your password.</li>
+              <li>Always verify that the browser address bar reads precisely <strong>https://myamerlflex.com</strong> before entering your password.</li>
               <li>Immediately notify Ameriflex Member Services if you suspect any unauthorized activity on your benefits account or debit card.</li>
             </ul>
           </div>
@@ -70,7 +70,7 @@ export default function PrivacyPolicyPage() {
         <div className="space-y-6 text-slate-700 leading-relaxed text-[16px]">
           <div className="border-l-4 border-[#163e48] pl-4 py-1 mb-6 text-sm text-slate-800 font-medium">
             Effective Date: January 1, 2026 | Last Reviewed: July 2026<br />
-            This Privacy Policy applies to the official Ameriflex participant portal (participant.ameriflex.com) and all employee benefit administration services provided by Ameriflex.
+            This Privacy Policy applies to the official Ameriflex participant portal (myamerlflex.com) and all employee benefit administration services provided by Ameriflex.
           </div>
 
           <div>
@@ -142,7 +142,7 @@ export default function PrivacyPolicyPage() {
           <div>
             <h3 className="text-lg font-semibold text-[#163e48] mb-2">1. Acceptance of Portal Terms of Use</h3>
             <p>
-              By accessing, browsing, or logging into the MyAmeriflex participant portal at <strong>participant.ameriflex.com</strong>, you acknowledge that you have read, understood, and agreed to be legally bound by these Terms & Conditions. If you do not agree with these terms, you must immediately cease using the online portal and contact Ameriflex Member Services for alternative offline claims submission options.
+              By accessing, browsing, or logging into the MyAmeriflex participant portal at <strong>myamerlflex.com</strong>, you acknowledge that you have read, understood, and agreed to be legally bound by these Terms & Conditions. If you do not agree with these terms, you must immediately cease using the online portal and contact Ameriflex Member Services for alternative offline claims submission options.
             </p>
           </div>
 
@@ -168,7 +168,7 @@ export default function PrivacyPolicyPage() {
           <div>
             <h3 className="text-lg font-semibold text-[#163e48] mb-2">4. Electronic Communications and Signatures</h3>
             <p>
-              By registering an account on participant.ameriflex.com, you consent to receive account notices, tax disclosures (including Form 1099-SA and Form 5498-SA where applicable), and balance updates electronically via email or portal notifications. You agree that any electronic checkbox, digital signature, or submission of a claim certification holds the same binding legal effect as a handwritten ink signature under the Electronic Signatures in Global and National Commerce (E-SIGN) Act.
+              By registering an account on myamerlflex.com, you consent to receive account notices, tax disclosures (including Form 1099-SA and Form 5498-SA where applicable), and balance updates electronically via email or portal notifications. You agree that any electronic checkbox, digital signature, or submission of a claim certification holds the same binding legal effect as a handwritten ink signature under the Electronic Signatures in Global and National Commerce (E-SIGN) Act.
             </p>
           </div>
 
@@ -203,7 +203,7 @@ export default function PrivacyPolicyPage() {
           <div>
             <h3 className="text-lg font-semibold text-[#163e48] mb-2">2. Conformance with WCAG 2.1 AA Standards</h3>
             <p>
-              We continuously design, build, and test our web interfaces against the Web Content Accessibility Guidelines (WCAG) 2.1 Level AA criteria established by the World Wide Web Consortium (W3C). Key accessibility features implemented across participant.ameriflex.com include:
+              We continuously design, build, and test our web interfaces against the Web Content Accessibility Guidelines (WCAG) 2.1 Level AA criteria established by the World Wide Web Consortium (W3C). Key accessibility features implemented across myamerlflex.com include:
             </p>
             <ul className="list-disc pl-6 mt-2 space-y-1 text-slate-600">
               <li><strong>Screen Reader Compatibility:</strong> Proper semantic HTML5 tags, ARIA attributes (`aria-expanded`, `aria-label`, `.sr-only`), and structured document outlines optimized for JAWS, NVDA, and VoiceOver.</li>
@@ -358,7 +358,7 @@ export default function PrivacyPolicyPage() {
       <footer className="bg-white border-t border-slate-200 py-8 px-6 text-center text-xs text-slate-500">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <div>
-            © {new Date().getFullYear()} Ameriflex, LLC. All rights reserved. Official Participant Portal at participant.ameriflex.com.
+            © {new Date().getFullYear()} Ameriflex, LLC. All rights reserved. Official Participant Portal at myamerlflex.com.
           </div>
           <div className="flex gap-6">
             <button onClick={() => setOpenSection("privacy-policy")} className="hover:text-slate-800 underline">Privacy Policy</button>
